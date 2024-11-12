@@ -326,18 +326,18 @@ impl std::fmt::Display for CompileTarget {
     }
 }
 
-#[derive(Parser)]
+#[derive(Parser, Debug, Default)]
 pub struct BuildArgs {
     #[clap(flatten)]
-    build_target: BuildTargetArgs,
+    pub build_target: BuildTargetArgs,
     #[clap(flatten)]
-    cargo: CargoArgs,
+    pub cargo: CargoArgs,
     /// Use verbose output
     #[clap(long, short)]
-    verbose: bool,
+    pub verbose: bool,
 }
 
-#[derive(Parser)]
+#[derive(Parser, Debug, Default)]
 pub struct CargoArgs {
     /// Cargo package to build
     #[clap(long, short)]
@@ -368,45 +368,45 @@ impl CargoArgs {
     }
 }
 
-#[derive(Parser)]
+#[derive(Parser, Debug, Default)]
 pub struct BuildTargetArgs {
     /// Build artifacts in debug mode, without optimizations
     #[clap(long, conflicts_with = "release")]
-    debug: bool,
+    pub debug: bool,
     /// Build artifacts in release mode, with optimizations
     #[clap(long, short, conflicts_with = "debug")]
-    release: bool,
+    pub release: bool,
     /// Build artifacts for target platform. Can be one of
     /// `android`, `ios`, `linux`, `macos` or `windows`.
     #[clap(long, conflicts_with = "device")]
-    platform: Option<Platform>,
+    pub platform: Option<Platform>,
     /// Build artifacts for target arch. Can be one of
     /// `arm64` or `x64`.
     #[clap(long, requires = "platform")]
-    arch: Option<Arch>,
+    pub arch: Option<Arch>,
     /// Build artifacts for target device. To find the device
     /// identifier of a connected device run `x devices`.
     #[clap(long, conflicts_with = "store")]
-    device: Option<String>,
+    pub device: Option<String>,
     /// Build artifacts with format. Can be one of `aab`,
     /// `apk`, `appbundle`, `appdir`, `appimage`, `dmg`,
     /// `exe`, `ipa`, `msix`.
     #[clap(long, conflicts_with = "store")]
-    format: Option<Format>,
+    pub format: Option<Format>,
     /// Build artifacts for target app store. Can be one of
     /// `apple`, `microsoft`, `play` or `sideload`.
     #[clap(long, conflicts_with = "device", conflicts_with = "format")]
-    store: Option<Store>,
+    pub store: Option<Store>,
     /// Path to a PEM encoded RSA2048 signing key and certificate
     /// used to sign artifacts.
     #[clap(long)]
-    pem: Option<PathBuf>,
+    pub pem: Option<PathBuf>,
     /// Path to an apple provisioning profile.
     #[clap(long)]
-    provisioning_profile: Option<PathBuf>,
+    pub provisioning_profile: Option<PathBuf>,
     /// Path to an api key.
     #[clap(long)]
-    api_key: Option<PathBuf>,
+    pub api_key: Option<PathBuf>,
 }
 
 impl BuildTargetArgs {
@@ -576,7 +576,7 @@ impl BuildEnv {
     pub fn new(args: BuildArgs) -> Result<Self> {
         let verbose = args.verbose;
         let offline = args.cargo.offline;
-        let cargo = args.cargo.cargo()?;
+        let cargo = args.cargo.cargo()?; // NOTE this breaks
         let build_dir = cargo.target_dir().join("x");
         let cache_dir = dirs::cache_dir().unwrap().join("x");
         let package = cargo.manifest().package.as_ref().unwrap(); // Caller should guarantee that this is a valid package

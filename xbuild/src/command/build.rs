@@ -13,6 +13,8 @@ use std::path::Path;
 use xcommon::{Zip, ZipFileOptions};
 
 pub fn build(env: &BuildEnv) -> Result<()> {
+    dbg!("build");
+
     let platform_dir = env.platform_dir();
     std::fs::create_dir_all(&platform_dir)?;
 

@@ -55,6 +55,8 @@ impl Manifest {
                     manifest_path.display(),
                 );
 
+                // this breaks
+
                 // And because they cannot contain a [workspace], they may not be a virtual manifest
                 // and must hence contain [package]
                 anyhow::ensure!(

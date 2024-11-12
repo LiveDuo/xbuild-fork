@@ -94,6 +94,8 @@ pub fn verify(path: &Path) -> Result<Vec<Certificate>> {
 }
 
 pub fn sign(path: &Path, signer: Option<Signer>) -> Result<()> {
+    dbg!("sign");
+
     let signer = signer.map(Ok).unwrap_or_else(|| Signer::new(DEBUG_PEM))?;
     let apk = std::fs::read(path)?;
     let mut r = Cursor::new(&apk);
