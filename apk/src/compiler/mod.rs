@@ -120,7 +120,7 @@ impl<'a> Mipmap<'a> {
 mod tests {
     use super::*;
     use crate::compiler::table::Ref;
-    use crate::manifest::Activity;
+    use crate::manifest::{Activity, IntentFilter, Sdk};
     use std::io::Cursor;
 
     #[test]
@@ -149,21 +149,29 @@ mod tests {
     }
 
     #[test]
+    // ANDROID_HOME=~/Downloads/android-sdk cargo test -p apk test_compile_manifest -- --nocapture
     fn test_compile_manifest() -> Result<()> {
         let android = crate::tests::find_android_jar()?;
         let mut table = Table::default();
         table.import_apk(&android)?;
         let mut manifest = AndroidManifest::default();
-        manifest.application.label = Some("helloworld".into());
-        manifest.application.theme = Some("@android:style/Theme.Light.NoTitleBar".into());
-        manifest.application.debuggable = Some(true);
-        let activity = Activity {
-            config_changes: Some("orientation|keyboardHidden".into()),
-            launch_mode: Some("singleTop".into()),
-            ..Default::default()
-        };
+        manifest.package = Some("com.testauthor.testapp".to_owned());
+        manifest.sdk = Sdk { min_sdk_version: Some(15),..Default::default() };
+        let mut activity = Activity::default();
+        activity.name = Some("MainActivity".to_owned());
+        let actions = vec!["android.intent.action.MAIN".to_owned()];
+        let categories = vec!["android.intent.category.LAUNCHER".to_owned()];
+        activity.intent_filters = vec![IntentFilter { actions, categories, data: vec![] }];
         manifest.application.activities.push(activity);
         let _chunk = compile_manifest(&manifest, &table)?;
+
+        let mut buffer = vec![];
+        let mut cursor = Cursor::new(&mut buffer);
+        _chunk.write(&mut cursor)?;
+
+        std::fs::write("/tmp/AndroidManifest.axml", buffer).unwrap();
+        // du -h /tmp/AndroidManifest.axml
+
         Ok(())
     }
 }
