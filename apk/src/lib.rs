@@ -5,7 +5,7 @@ use std::io::Cursor;
 use std::path::{Path, PathBuf};
 use xcommon::{Scaler, ScalerOpts, Zip, ZipFileOptions};
 
-mod compiler;
+pub mod compiler;
 pub mod manifest;
 pub mod res;
 mod sign;
