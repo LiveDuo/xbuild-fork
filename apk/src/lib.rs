@@ -8,8 +8,8 @@ use xcommon::{Scaler, ScalerOpts, Zip, ZipFileOptions};
 pub mod compiler;
 pub mod manifest;
 pub mod res;
-mod sign;
-mod utils;
+pub mod sign;
+pub mod utils;
 
 pub use crate::manifest::AndroidManifest;
 pub use crate::utils::{Target, VersionCode};
