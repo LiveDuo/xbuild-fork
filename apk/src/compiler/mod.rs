@@ -5,9 +5,9 @@ use crate::res::{
 };
 use anyhow::Result;
 
-mod attributes;
-mod table;
-mod xml;
+pub mod attributes;
+pub mod table;
+pub mod xml;
 
 pub use table::Table;
 
