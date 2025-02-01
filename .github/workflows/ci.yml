@@ -64,7 +64,7 @@ jobs:
         rust-version: stable
 
     - name: install x
-      uses: actions/download-artifact@v3
+      uses: actions/download-artifact@v4
       with:
         name: ${{ matrix.host }}-x
     - run: chmod +x ./x
